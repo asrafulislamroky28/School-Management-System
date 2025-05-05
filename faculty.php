@@ -22,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $stmt->execute();
     $stmt->close();
 
-    // Refresh page
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
@@ -31,8 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $conn->query("DELETE FROM faculty WHERE id = $id");
-
-    // Refresh page
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
@@ -57,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $stmt->execute();
     $stmt->close();
 
-    // Refresh page
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
@@ -69,6 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Faculty Page</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -114,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
-    .add-btn {
+    .add-btn, .pdf-btn {
       background: #1abc9c;
       color: white;
       padding: 10px 20px;
@@ -122,9 +120,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
       border-radius: 6px;
       font-size: 16px;
       cursor: pointer;
+      margin-bottom: 10px;
     }
 
-    .add-btn:hover {
+    .add-btn:hover, .pdf-btn:hover {
       background-color: #16a085;
     }
 
@@ -145,7 +144,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
       color: white;
     }
 
-    /* Popup Form */
     .popup-form {
       display: none;
       position: fixed;
@@ -222,16 +220,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
       nav a {
         padding: 10px;
       }
-
       .form-content {
         width: 95%;
       }
-
       table, th, td {
         font-size: 14px;
       }
     }
   </style>
+  <script>
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(18);
+      doc.text("Faculty Information", 14, 22);
+      doc.autoTable({
+        startY: 30,
+        head: [['Teacher Name', 'Course Name', 'Course ID', 'Contact Info']],
+        body: [
+          <?php
+          $result = $conn->query("SELECT * FROM faculty ORDER BY id DESC");
+          while ($row = $result->fetch_assoc()) {
+              $rowData = [
+                  json_encode($row['teacher_name']),
+                  json_encode($row['course_name']),
+                  json_encode($row['course_id']),
+                  json_encode($row['contact_info']),
+              ];
+              echo '[' . implode(',', $rowData) . '],';
+          }
+          ?>
+        ],
+        styles: { fontSize: 12, cellPadding: 4 },
+        headStyles: { fillColor: [41, 128, 185], textColor: [255, 255, 255] },
+        theme: 'grid'
+      });
+      doc.save("Faculty_Info_Report.pdf");
+    }
+  </script>
 </head>
 <body>
 
@@ -241,7 +267,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
 <nav>
   <a href="dash.php">Home</a>
-  <a href="#">Exam Routine</a>
+  <a href="exam.php">Exam Routine</a>
   <a href="#">Class Routine</a>
   <a href="student_information.php">Student Information</a>
   <a href="#">Faculty</a>
@@ -249,6 +275,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 </nav>
 
 <div class="container">
+  <button class="pdf-btn" onclick="downloadPDF()">Download PDF</button>
   <button class="add-btn" onclick="document.getElementById('popup').style.display='flex'">Add Faculty</button>
 
   <table>
@@ -271,7 +298,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
               <td>" . htmlspecialchars($row['course_id']) . "</td>
               <td>" . htmlspecialchars($row['contact_info']) . "</td>
               <td>
-                <a href='?edit=" . $row['id'] . "' class='action-btn update-btn' onclick='openUpdateForm(" . $row['id'] . ")'>Update</a> |
+                <a href='?edit=" . $row['id'] . "' class='action-btn update-btn'>Update</a> |
                 <a href='?delete=" . $row['id'] . "' class='action-btn delete-btn' onclick='return confirm(\"Are you sure you want to delete this record?\")'>Delete</a>
               </td>
             </tr>";
@@ -281,7 +308,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
   </table>
 </div>
 
-<!-- Popup Form to Add Faculty -->
+<!-- Add Faculty Popup Form -->
 <div class="popup-form" id="popup">
   <div class="form-content">
     <form method="POST">
@@ -296,17 +323,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
   </div>
 </div>
 
-<!-- Update Form Popup -->
+<!-- Update Faculty Popup Form -->
 <?php if (isset($faculty)): ?>
   <div class="popup-form" id="updatePopup" style="display: flex;">
     <div class="form-content">
       <form method="POST">
         <h2 style="text-align:center;">Update Faculty</h2>
         <input type="hidden" name="id" value="<?php echo $faculty['id']; ?>">
-        <input type="text" name="teacher_name" placeholder="Teacher Name" value="<?php echo $faculty['teacher_name']; ?>" required>
-        <input type="text" name="course_name" placeholder="Course Name" value="<?php echo $faculty['course_name']; ?>" required>
-        <input type="text" name="course_id" placeholder="Course ID" value="<?php echo $faculty['course_id']; ?>" required>
-        <input type="text" name="contact_info" placeholder="Contact Info" value="<?php echo $faculty['contact_info']; ?>" required>
+        <input type="text" name="teacher_name" value="<?php echo $faculty['teacher_name']; ?>" required>
+        <input type="text" name="course_name" value="<?php echo $faculty['course_name']; ?>" required>
+        <input type="text" name="course_id" value="<?php echo $faculty['course_id']; ?>" required>
+        <input type="text" name="contact_info" value="<?php echo $faculty['contact_info']; ?>" required>
         <button type="submit" name="action" value="update">Update</button>
         <button type="button" class="close-btn" onclick="document.getElementById('updatePopup').style.display='none'">Cancel</button>
       </form>
@@ -314,9 +341,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
   </div>
 <?php endif; ?>
 
-<?php
-$conn->close();
-?>
+<?php $conn->close(); ?>
 
 </body>
 </html>

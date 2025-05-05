@@ -1,17 +1,17 @@
 <?php
+session_start();
+
 $host = "localhost";
 $user = "root";
 $password = "";
 $dbname = "student_db";
 
 $conn = new mysqli($host, $user, $password, $dbname);
-
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
 $id = $_GET['id'] ?? null;
-
 if (!$id) {
     die("Invalid ID.");
 }
@@ -23,28 +23,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $gender = $_POST['gender'];
     $username = $_POST['username'];
 
-    $sql = "UPDATE students SET 
-            first_name = '$first_name', 
-            last_name = '$last_name', 
-            dob = '$dob', 
-            gender = '$gender', 
-            username = '$username' 
-            WHERE id = $id";
+    $stmt = $conn->prepare("UPDATE students SET first_name = ?, last_name = ?, dob = ?, gender = ?, username = ? WHERE id = ?");
+    $stmt->bind_param("sssssi", $first_name, $last_name, $dob, $gender, $username, $id);
 
-    if ($conn->query($sql) === TRUE) {
+    if ($stmt->execute()) {
         $message = "Student record updated successfully.";
     } else {
-        $message = "Error updating record: " . $conn->error;
+        $message = "Error updating record: " . $stmt->error;
     }
 }
 
-$result = $conn->query("SELECT * FROM students WHERE id = $id");
-
-if (!$result || $result->num_rows === 0) {
+// Use prepared statement to fetch student data
+$stmt = $conn->prepare("SELECT * FROM students WHERE id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows === 0) {
     die("Student not found.");
 }
-
 $row = $result->fetch_assoc();
+
 $conn->close();
 ?>
 
@@ -55,7 +53,8 @@ $conn->close();
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: #f2f2f2;
+            background: url('reg.jpg') no-repeat center center fixed;
+            background-size: cover;
             padding: 30px;
         }
         .container {
@@ -98,6 +97,7 @@ $conn->close();
         .message {
             text-align: center;
             color: green;
+            margin-bottom: 15px;
         }
         .back-link {
             display: block;
@@ -117,15 +117,15 @@ $conn->close();
         <form method="POST">
             <div class="form-group">
                 <label>First Name</label>
-                <input type="text" name="first_name" value="<?php echo $row['first_name']; ?>" required>
+                <input type="text" name="first_name" value="<?php echo htmlspecialchars($row['first_name']); ?>" required>
             </div>
             <div class="form-group">
                 <label>Last Name</label>
-                <input type="text" name="last_name" value="<?php echo $row['last_name']; ?>" required>
+                <input type="text" name="last_name" value="<?php echo htmlspecialchars($row['last_name']); ?>" required>
             </div>
             <div class="form-group">
                 <label>Date of Birth</label>
-                <input type="date" name="dob" value="<?php echo $row['dob']; ?>" required>
+                <input type="date" name="dob" value="<?php echo htmlspecialchars($row['dob']); ?>" required>
             </div>
             <div class="form-group">
                 <label>Gender</label>
@@ -137,7 +137,7 @@ $conn->close();
             </div>
             <div class="form-group">
                 <label>Username</label>
-                <input type="text" name="username" value="<?php echo $row['username']; ?>" required>
+                <input type="text" name="username" value="<?php echo htmlspecialchars($row['username']); ?>" required>
             </div>
             <button type="submit" class="btn">Update</button>
         </form>

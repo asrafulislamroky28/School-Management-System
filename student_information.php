@@ -23,6 +23,7 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <title>All Students | Student Management System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -49,7 +50,6 @@ $result = $conn->query($sql);
             overflow-x: auto;
         }
 
-        /* Header and Navbar styles */
         header {
             background: rgba(44, 62, 80, 0.85);
             color: white;
@@ -57,12 +57,24 @@ $result = $conn->query($sql);
             text-align: center;
         }
 
-       
+        h1 {
+            margin: 0;
+        }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            color: #333;
+        .pdf-btn {
+            display: block;
+            margin: 10px auto;
+            background-color: #1abc9c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .pdf-btn:hover {
+            background-color: #16a085;
         }
 
         table {
@@ -75,6 +87,7 @@ $result = $conn->query($sql);
             padding: 12px 16px;
             border-bottom: 1px solid #ccc;
             text-align: left;
+            vertical-align: middle;
         }
 
         th {
@@ -94,22 +107,36 @@ $result = $conn->query($sql);
 
         .action-btn {
             padding: 6px 12px;
-            margin: 2px;
             border: none;
             border-radius: 5px;
             font-size: 14px;
             cursor: pointer;
             text-decoration: none;
+            color: white;
+            margin: 0;
+            white-space: nowrap;
         }
 
         .update-btn {
             background-color: #27ae60;
-            color: white;
         }
 
         .delete-btn {
             background-color: #e74c3c;
-            color: white;
+        }
+
+        .no-print {
+            display: inline-block;
+        }
+
+        .action-cell {
+            display: flex;
+            gap: 8px;
+            min-width: 170px; /* Ensure enough space for both buttons */
+        }
+
+        th.no-print {
+            min-width: 170px;
         }
 
         .back-link {
@@ -124,15 +151,14 @@ $result = $conn->query($sql);
 </head>
 <body>
 
-<!-- Include the header/navbar -->
 <?php include('header.php'); ?>
 
-<div class="info-container">
+<div class="info-container" id="student-content">
     <header>
         <h1>Student Information Page</h1>
     </header>
 
-  
+    <button class="pdf-btn no-print" onclick="downloadPDF()">Download PDF</button>
 
     <?php if ($result && $result->num_rows > 0): ?>
         <table>
@@ -144,7 +170,7 @@ $result = $conn->query($sql);
                     <th>Date Of Birth</th>
                     <th>Gender</th>
                     <th>Username</th>
-                    <th>Actions</th>
+                    <th class="no-print">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -156,7 +182,7 @@ $result = $conn->query($sql);
                         <td><?php echo htmlspecialchars($row['dob']); ?></td>
                         <td><?php echo htmlspecialchars($row['gender']); ?></td>
                         <td><?php echo htmlspecialchars($row['username']); ?></td>
-                        <td>
+                        <td class="no-print action-cell">
                             <a class="action-btn update-btn" href="update.php?id=<?php echo $row['id']; ?>">Update</a>
                             <a class="action-btn delete-btn" href="delete.php?id=<?php echo $row['id']; ?>" onclick="return confirm('Are you sure you want to delete this student?');">Delete</a>
                         </td>
@@ -168,6 +194,27 @@ $result = $conn->query($sql);
         <p class="no-data">No student records found.</p>
     <?php endif; ?>
 </div>
+
+<script>
+function downloadPDF() {
+    const noPrintEls = document.querySelectorAll('.no-print');
+    noPrintEls.forEach(el => el.style.display = 'none');
+
+    const element = document.getElementById('student-content');
+
+    const opt = {
+        margin:       0.5,
+        filename:     'student_information.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save().then(() => {
+        noPrintEls.forEach(el => el.style.display = 'inline-block');
+    });
+}
+</script>
 
 </body>
 </html>

@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 30, 2025 at 12:01 PM
--- Server version: 10.4.10-MariaDB
--- PHP Version: 7.3.12
+-- Generation Time: Apr 30, 2025 at 10:00 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -33,7 +32,7 @@ CREATE TABLE `class6_routine` (
   `exam_date` date NOT NULL,
   `subject` varchar(100) NOT NULL,
   `exam_time` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `class6_routine`
@@ -52,114 +51,6 @@ INSERT INTO `class6_routine` (`id`, `exam_date`, `subject`, `exam_time`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `class7_routine`
---
-
-CREATE TABLE `class7_routine` (
-  `id` int(11) NOT NULL,
-  `exam_date` date NOT NULL,
-  `subject` varchar(100) NOT NULL,
-  `exam_time` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `class7_routine`
---
-
-INSERT INTO `class7_routine` (`id`, `exam_date`, `subject`, `exam_time`) VALUES
-(1, '2025-05-06', 'Science', '10:00 AM - 12:00 PM'),
-(2, '2025-05-08', 'Bangla', '10:00 AM - 12:00 PM'),
-(3, '2025-05-10', 'Math', '10:00 AM - 12:00 PM'),
-(4, '2025-05-12', 'English', '10:00 AM - 12:00 PM'),
-(5, '2025-05-14', 'Religion', '10:00 AM - 12:00 PM'),
-(6, '2025-05-16', 'ICT', '10:00 AM - 12:00 PM'),
-(7, '2025-05-18', 'Social Science', '10:00 AM - 12:00 PM'),
-(8, '2025-05-20', 'General Knowledge', '10:00 AM - 12:00 PM');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `class8_routine`
---
-
-CREATE TABLE `class8_routine` (
-  `id` int(11) NOT NULL,
-  `exam_date` date NOT NULL,
-  `subject` varchar(100) NOT NULL,
-  `exam_time` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `class8_routine`
---
-
-INSERT INTO `class8_routine` (`id`, `exam_date`, `subject`, `exam_time`) VALUES
-(1, '2025-05-06', 'Science', '10:00 AM - 12:00 PM'),
-(2, '2025-05-08', 'Bangla', '10:00 AM - 12:00 PM'),
-(3, '2025-05-10', 'Math', '10:00 AM - 12:00 PM'),
-(4, '2025-05-12', 'English', '10:00 AM - 12:00 PM'),
-(5, '2025-05-14', 'Religion', '10:00 AM - 12:00 PM'),
-(6, '2025-05-16', 'ICT', '10:00 AM - 12:00 PM'),
-(7, '2025-05-18', 'Social Science', '10:00 AM - 12:00 PM'),
-(8, '2025-05-20', 'General Knowledge', '10:00 AM - 12:00 PM');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `class9_routine`
---
-
-CREATE TABLE `class9_routine` (
-  `id` int(11) NOT NULL,
-  `exam_date` date NOT NULL,
-  `subject` varchar(100) NOT NULL,
-  `exam_time` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `class9_routine`
---
-
-INSERT INTO `class9_routine` (`id`, `exam_date`, `subject`, `exam_time`) VALUES
-(1, '2025-05-06', 'Science', '10:00 AM - 12:00 PM'),
-(2, '2025-05-08', 'Bangla', '10:00 AM - 12:00 PM'),
-(3, '2025-05-10', 'Math', '10:00 AM - 12:00 PM'),
-(4, '2025-05-12', 'English', '10:00 AM - 12:00 PM'),
-(5, '2025-05-14', 'Religion', '10:00 AM - 12:00 PM'),
-(6, '2025-05-16', 'ICT', '10:00 AM - 12:00 PM'),
-(7, '2025-05-18', 'Social Science', '10:00 AM - 12:00 PM'),
-(8, '2025-05-20', 'General Knowledge', '10:00 AM - 12:00 PM');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `class10_routine`
---
-
-CREATE TABLE `class10_routine` (
-  `id` int(11) NOT NULL,
-  `exam_date` date NOT NULL,
-  `subject` varchar(100) NOT NULL,
-  `exam_time` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `class10_routine`
---
-
-INSERT INTO `class10_routine` (`id`, `exam_date`, `subject`, `exam_time`) VALUES
-(1, '2025-05-06', 'Science', '10:00 AM - 12:00 PM'),
-(2, '2025-05-08', 'Bangla', '10:00 AM - 12:00 PM'),
-(3, '2025-05-10', 'Math', '10:00 AM - 12:00 PM'),
-(4, '2025-05-12', 'English', '10:00 AM - 12:00 PM'),
-(5, '2025-05-14', 'Religion', '10:00 AM - 12:00 PM'),
-(6, '2025-05-16', 'ICT', '10:00 AM - 12:00 PM'),
-(7, '2025-05-18', 'Social Science', '10:00 AM - 12:00 PM'),
-(8, '2025-05-20', 'General Knowledge', '10:00 AM - 12:00 PM');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `faculty`
 --
 
@@ -169,7 +60,7 @@ CREATE TABLE `faculty` (
   `course_name` varchar(100) DEFAULT NULL,
   `course_id` varchar(20) DEFAULT NULL,
   `contact_info` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `faculty`
@@ -212,7 +103,7 @@ CREATE TABLE `students` (
   `username` varchar(100) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `students`
@@ -256,30 +147,6 @@ ALTER TABLE `class6_routine`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `class7_routine`
---
-ALTER TABLE `class7_routine`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `class8_routine`
---
-ALTER TABLE `class8_routine`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `class9_routine`
---
-ALTER TABLE `class9_routine`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `class10_routine`
---
-ALTER TABLE `class10_routine`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `faculty`
 --
 ALTER TABLE `faculty`
@@ -300,30 +167,6 @@ ALTER TABLE `students`
 -- AUTO_INCREMENT for table `class6_routine`
 --
 ALTER TABLE `class6_routine`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT for table `class7_routine`
---
-ALTER TABLE `class7_routine`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT for table `class8_routine`
---
-ALTER TABLE `class8_routine`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT for table `class9_routine`
---
-ALTER TABLE `class9_routine`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT for table `class10_routine`
---
-ALTER TABLE `class10_routine`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --

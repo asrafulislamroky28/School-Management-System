@@ -207,11 +207,10 @@ if (!isset($_SESSION['username'])) {
     <h1><i class="fas fa-graduation-cap"></i> Dashboard</h1>
     <a href="student_information.php"><i class="fas fa-user-graduate"></i> Student Information</a>
     <a href="#"><i class="fas fa-calendar-check"></i> Attendance</a>
-    <a href="#"><i class="fas fa-credit-card"></i> Payment</a>
-    <a href="#"><i class="fas fa-file-alt"></i> Exam Routine</a>
+    <a href="pay.phh"><i class="fas fa-credit-card"></i> Payment</a>
+    <a href="exam.php"><i class="fas fa-file-alt"></i> Exam Routine</a>
     <a href="faculty.php"><i class="fas fa-star"></i> Faculty</a>
-    <a href="#"><i class="fas fa-book"></i> Course</a>
-    <a href="#"><i class="fas fa-clock"></i> Class Routine</a>
+    <a href="class_r.php"><i class="fas fa-clock"></i> Class Routine</a>
     <a href="about.php"><i class="fas fa-info-circle"></i> About</a>
 
     <form class="logout-form" action="logout.php" method="POST">

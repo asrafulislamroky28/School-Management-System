@@ -2,10 +2,10 @@
     <a href="dash.php" class="active">Dashboard</a>
     <a href="faculty.php">Faculty</a>
     <a href="payment.php">Payment</a>
-    <a href="about.php">About</a>
     <a href="attendance.php">Attendance</a>
-    <a href="class_routine.php">Class Routine</a>
-    <a href="course.php">Courses</a>
+    <a href="class_r.php">Class Routine</a>
+    <a href="exam.php">Exam Routine</a>
+    <a href="about.php">About</a>
     <a href="logout.php">Logout</a>
 </div>
 
