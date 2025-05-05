@@ -13,6 +13,11 @@ $result = $conn->query($sql);
 <html>
 <head>
     <title>Class 7 Exam Routine</title>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class 7 Exam Routine</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -69,18 +74,45 @@ $result = $conn->query($sql);
         .btn-back:hover {
             background-color: #388e3c;
         }
+        .pdf-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #f39c12;
+            color: white;
+            text-align: center;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+        }
+        .pdf-btn:hover {
+            background-color: #e67e22;
+        }
+        /* Hide the action buttons for PDF download */
+        .no-action {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>Class 7 Exam Routine</h2>
+<div class="container" id="exam-routine">
+    <h2>Class 7 Exam Routine</h2>
+
+    <!-- PDF Download Button -->
+    <button class="pdf-btn" onclick="downloadPDF()">Download PDF</button>
+
     <table>
         <tr>
             <th>Date</th>
             <th>Subject</th>
             <th>Time</th>
             <th>Action</th>
+            <th class="no-action">Action</th> <!-- Hide in PDF -->
         </tr>
         <?php if ($result->num_rows > 0): ?>
             <?php while ($row = $result->fetch_assoc()): ?>
@@ -89,6 +121,7 @@ $result = $conn->query($sql);
                     <td><?= $row['subject'] ?></td>
                     <td><?= $row['exam_time'] ?></td>
                     <td>
+                    <td class="no-action">
                         <a class="btn btn-update" href="update_routine.php?id=<?= $row['id'] ?>&class=7">Update</a>
                     </td>
                 </tr>
@@ -100,6 +133,28 @@ $result = $conn->query($sql);
 
     <a href="exam.php" class="btn btn-back">Back</a>
 </div>
+
+<script>
+    function downloadPDF() {
+        const element = document.getElementById('exam-routine');
+        const options = {
+            margin: 1,
+            filename: 'class_7_exam_routine.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        // Hide the action buttons before generating PDF
+        const actions = document.querySelectorAll('.no-action');
+        actions.forEach(action => action.style.display = 'none');
+
+        // Generate PDF
+        html2pdf().set(options).from(element).save();
+
+        // Restore action buttons after PDF generation
+        actions.forEach(action => action.style.display = '');
+    }
+</script>
 
 </body>
 </html>

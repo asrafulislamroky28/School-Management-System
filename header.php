@@ -6,6 +6,8 @@
     <a href="class_routine.php">Class Routine</a>
     <a href="exam.php">Exam Routine</a>
     <a href="course.php">Courses</a>
+    <a href="class_r.php">Class Routine</a>
+    <a href="exam.php">Exam Routine</a>
     <a href="about.php">About</a>
     <a href="logout.php">Logout</a>
 </div>
