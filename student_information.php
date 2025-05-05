@@ -23,6 +23,7 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <title>All Students | Student Management System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -49,7 +50,6 @@ $result = $conn->query($sql);
             overflow-x: auto;
         }
 
-        /* Header and Navbar styles */
         header {
             background: rgba(44, 62, 80, 0.85);
             color: white;
@@ -57,12 +57,26 @@ $result = $conn->query($sql);
             text-align: center;
         }
 
-       
-
         h2 {
             text-align: center;
             margin-bottom: 25px;
             color: #333;
+        }
+
+        .pdf-btn {
+            display: block;
+            margin: 10px auto;
+            background-color: #1abc9c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .pdf-btn:hover {
+            background-color: #16a085;
         }
 
         table {
@@ -124,7 +138,6 @@ $result = $conn->query($sql);
 </head>
 <body>
 
-<!-- Include the header/navbar -->
 <?php include('header.php'); ?>
 
 <div class="info-container">
@@ -132,42 +145,62 @@ $result = $conn->query($sql);
         <h1>Student Information Page</h1>
     </header>
 
-  
+    <button class="pdf-btn" onclick="downloadPDF()">Download PDF</button>
 
-    <?php if ($result && $result->num_rows > 0): ?>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Date Of Birth</th>
-                    <th>Gender</th>
-                    <th>Username</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $result->fetch_assoc()): ?>
+    <div id="student-content">
+        <?php if ($result && $result->num_rows > 0): ?>
+            <table>
+                <thead>
                     <tr>
-                        <td><?php echo htmlspecialchars($row['id']); ?></td>
-                        <td><?php echo htmlspecialchars($row['first_name']); ?></td>
-                        <td><?php echo htmlspecialchars($row['last_name']); ?></td>
-                        <td><?php echo htmlspecialchars($row['dob']); ?></td>
-                        <td><?php echo htmlspecialchars($row['gender']); ?></td>
-                        <td><?php echo htmlspecialchars($row['username']); ?></td>
-                        <td>
-                            <a class="action-btn update-btn" href="update.php?id=<?php echo $row['id']; ?>">Update</a>
-                            <a class="action-btn delete-btn" href="delete.php?id=<?php echo $row['id']; ?>" onclick="return confirm('Are you sure you want to delete this student?');">Delete</a>
-                        </td>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Date Of Birth</th>
+                        <th>Gender</th>
+                        <th>Username</th>
+                        <th>Actions</th>
                     </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
-    <?php else: ?>
-        <p class="no-data">No student records found.</p>
-    <?php endif; ?>
+                </thead>
+                <tbody>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($row['id']); ?></td>
+                            <td><?php echo htmlspecialchars($row['first_name']); ?></td>
+                            <td><?php echo htmlspecialchars($row['last_name']); ?></td>
+                            <td><?php echo htmlspecialchars($row['dob']); ?></td>
+                            <td><?php echo htmlspecialchars($row['gender']); ?></td>
+                            <td><?php echo htmlspecialchars($row['username']); ?></td>
+                            <td>
+                                <a class="action-btn update-btn" href="update.php?id=<?php echo $row['id']; ?>">Update</a>
+                                <a class="action-btn delete-btn" href="delete.php?id=<?php echo $row['id']; ?>" onclick="return confirm('Are you sure you want to delete this student?');">Delete</a>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <p class="no-data">No student records found.</p>
+        <?php endif; ?>
+    </div>
 </div>
+
+<script>
+function downloadPDF() {
+    const element = document.getElementById('student-content');
+
+    const opt = {
+        margin:       0.5,
+        filename:     'student_information.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).outputPdf('bloburl').then(function(pdfUrl) {
+        window.open(pdfUrl, '_blank');
+    });
+}
+</script>
 
 </body>
 </html>
